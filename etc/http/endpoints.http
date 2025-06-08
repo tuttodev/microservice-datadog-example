@@ -1,0 +1,12 @@
+GET http://localhost:3000/ping
+
+###
+
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "name": "Introduction to Programming",
+  "id": "02517ad0-cbd3-4bdb-a638-8e1af77bedb8",
+  "duration": "10"
+}

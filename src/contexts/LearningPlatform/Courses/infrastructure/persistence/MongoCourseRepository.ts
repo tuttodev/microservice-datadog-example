@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Nullable } from '../../../../Shared/domain/Nullable';
 import { MongoRepository } from '../../../../Shared/infrastructure/persistence/mongo/MongoRepository';
 import { CourseId } from '../../../Shared/domain/Courses/CourseId';
@@ -5,7 +6,7 @@ import { Course } from '../../domain/Course';
 import { CourseRepository } from '../../domain/CourseRepository';
 
 interface CourseDocument {
-  _id: string;
+  id: string;
   name: string;
   duration: string;
 }
@@ -17,7 +18,7 @@ export class MongoCourseRepository extends MongoRepository<Course> implements Co
 
   public async search(id: CourseId): Promise<Nullable<Course>> {
     const collection = await this.collection();
-    const document = await collection.findOne<CourseDocument>({ _id: id.value });
+    const document = await collection.findOne<CourseDocument>({ id });
 
     return document ? Course.fromPrimitives({ name: document.name, duration: document.duration, id: id.value }) : null;
   }
@@ -30,8 +31,8 @@ export class MongoCourseRepository extends MongoRepository<Course> implements Co
     const collection = await this.collection();
     const documents = await collection.find<CourseDocument>({}, {}).toArray();
 
-    return documents.map(document =>
-      Course.fromPrimitives({ name: document.name, duration: document.duration, id: document._id })
-    );
+    return documents.map(document => {
+      return Course.fromPrimitives({ name: document.name, duration: document.duration, id: document.id });
+    });
   }
 }
